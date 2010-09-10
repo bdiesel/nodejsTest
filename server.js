@@ -1,13 +1,20 @@
-var http = require('http'),
-     sys = require('sys');
+require.paths.unshift(__dirname + "/vendor");
 
-var server = http.createServer(function(request, response) {
-    request.addListener('end', function() {
-        response.writeHead(200, {
-            'Content-Type' : 'text/plain'
-        });
-        response.write(sys.inspect(request));
-        response.end();
-    });
+process.addListener('uncaughtException', function (err, stack) {
+  console.log('-------------------------------------------------');
+  console.log('Exception: ' + err);
+  console.log(err.stack);
+  console.log('-------------------------------------------------');
 });
-server.listen(8000);
+
+var LiveStats = require('./lib/livestats');
+
+new LiveStats({
+   port: 8000,
+   geoipServer: {
+       hostname: 'geoip.peepcode.com'
+      ,port :80
+   } 
+});
+
+
